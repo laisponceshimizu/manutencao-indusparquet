@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Controle de Manutenção - Indusparquet</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f3f4f6;--card:#fff;--tx:#1f2937;--mu:#6b7280;--bd:#d1d5db;--ac:#c2410c;--ac2:#fff7ed;--ok:#15803d;--nc:#b91c1c;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111827;--card:#1f2937;--tx:#f3f4f6;--mu:#9ca3af;--bd:#374151;--ac:#fb923c;--ac2:#2a1d12;--ok:#4ade80;--nc:#f87171;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+#app{max-width:980px;margin:0 auto;padding:12px}
+h1{font-size:18px;margin:0;letter-spacing:.5px}h2{font-size:15px;margin:0 0 10px;color:var(--ac);text-transform:uppercase;letter-spacing:.5px}
+p{margin:2px 0;color:var(--mu);font-size:13px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-bottom:12px}
+.hd{display:flex;justify-content:space-between;align-items:center;border-left:6px solid var(--ac);gap:10px}
+.tag{font:700 16px ui-monospace,Menlo,monospace;background:var(--ac2);color:var(--ac);padding:6px 10px;border-radius:6px;border:1px solid var(--ac)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:640px){.g2,.g3{grid-template-columns:1fr}}
+label{display:block;font-size:12px;color:var(--mu);font-weight:600}
+input,select,textarea{width:100%;font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:7px 8px;margin-top:3px}
+textarea{min-height:60px;resize:vertical}
+input:disabled,select:disabled,textarea:disabled{opacity:1;-webkit-text-fill-color:var(--tx);background:transparent;border-color:transparent;padding-left:0;appearance:none;-webkit-appearance:none;resize:none}
+button,.btn{font:inherit;font-weight:600;cursor:pointer;border:1px solid var(--ac);background:var(--ac);color:#fff;border-radius:6px;padding:7px 12px;display:inline-block;text-decoration:none}
+:root:not([data-theme="light"]) button,:root:not([data-theme="light"]) .btn{color:#111}
+:root:not([data-theme="light"]) button.s{color:var(--ac)}:root:not([data-theme="light"]) button.d{color:var(--nc)}
+button.s,.btn.s{background:transparent;color:var(--ac)}button.d{background:transparent;color:var(--nc);border-color:var(--nc)}
+.top{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap}.top .sp{flex:1}
+.ph{border:2px dashed var(--bd);border-radius:8px;min-height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:8px;text-align:center;color:var(--mu)}
+.ph img{max-width:100%;max-height:260px;border-radius:6px;object-fit:contain}
+.sc{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:560px}
+th{font-size:11px;text-align:left;color:var(--mu);padding:4px;text-transform:uppercase}td{padding:3px;border-top:1px solid var(--bd);vertical-align:middle}
+td input,td select{margin:0;padding:5px}tr.gr td{background:var(--ac2);color:var(--ac);font-weight:700;font-size:12px;padding:5px 8px}
+.st-OK{color:var(--ok)}.st-NC{color:var(--nc)}
+.rec{border:1px solid var(--bd);border-radius:8px;padding:10px;margin-bottom:10px}
+.th{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.th div{position:relative}.th img{width:84px;height:84px;object-fit:cover;border-radius:6px;border:1px solid var(--bd);cursor:zoom-in}
+.th b{position:absolute;top:-6px;right:-6px;background:var(--nc);color:#fff;width:20px;height:20px;border-radius:10px;text-align:center;line-height:20px;cursor:pointer;font-size:12px}
+.mc{cursor:pointer;display:flex;gap:12px;align-items:center;text-decoration:none;color:inherit}.mc img{width:70px;height:70px;object-fit:cover;border-radius:6px;background:var(--bg)}
+.qr{display:flex;gap:16px;align-items:center;flex-wrap:wrap}#qr{background:#fff;padding:8px;border-radius:6px;width:fit-content}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#111;color:#fff;padding:8px 14px;border-radius:20px;z-index:9}
+.badge{font-size:11px;color:var(--mu)}
+body.ro .ed{display:none!important}
+@media print{.noprint{display:none!important}body{background:#fff;color:#000}.card{break-inside:avoid;border-color:#999}input,select,textarea{border:none;background:none;color:#000;padding:2px 0}#app{max-width:none}}
+</style></head><body><div id="app"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+// ===== CONFIGURAÇÃO DO SUPABASE (cole aqui os seus dados) =====
+const SB_URL='COLE_AQUI_A_URL_DO_PROJETO';      // ex.: https://abcd1234.supabase.co
+const SB_KEY='COLE_AQUI_A_CHAVE_ANON_PUBLICA';  // chave "anon public"
+// ==============================================================
+const LS='fcm_auth',BK='fcm_base',BASE=location.href.split('#')[0];
+let M={},cur=null,timer=null,delArm=false,loaded=false,busy=false,AU=null;
+try{AU=JSON.parse(localStorage.getItem(LS)||'null')}catch(e){}
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const toast=t=>{const e=document.createElement('div');e.className='toast noprint';e.textContent=t;document.body.appendChild(e);setTimeout(()=>e.remove(),2800)};
+const ED=()=>!!AU, dis=()=>ED()?'':' disabled';
+
+/* ---------- Autenticação (somente quem edita) ---------- */
+function setAuth(j){AU={access_token:j.access_token,refresh_token:j.refresh_token,exp:Date.now()+(j.expires_in||3600)*1000};try{localStorage.setItem(LS,JSON.stringify(AU))}catch(e){}}
+function clearAuth(){AU=null;try{localStorage.removeItem(LS)}catch(e){}}
+const hdr=()=>AU?{apikey:SB_KEY,Authorization:'Bearer '+AU.access_token}:{apikey:SB_KEY};
+async function refresh(){
+ if(!AU||AU.exp-Date.now()>90000)return;
+ try{const r=await fetch(SB_URL+'/auth/v1/token?grant_type=refresh_token',{method:'POST',headers:{apikey:SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({refresh_token:AU.refresh_token})});
+  if(!r.ok)throw 0;setAuth(await r.json())}catch(e){clearAuth();toast('Sessão expirada. Entre novamente para editar.')}}
+async function login(){
+ const em=$('#em').value.trim(),pw=$('#pw').value;if(!em||!pw)return;
+ try{const r=await fetch(SB_URL+'/auth/v1/token?grant_type=password',{method:'POST',headers:{apikey:SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({email:em,password:pw})});
+  if(!r.ok)throw 0;setAuth(await r.json());toast('Modo edição ativado');location.hash='lista';render()}
+ catch(e){toast('E-mail ou senha incorretos')}}
+function logout(){clearAuth();location.hash='lista';render()}
+
+/* ---------- Dados ---------- */
+async function save(m){await refresh();if(!ED())return;
+ try{const r=await fetch(SB_URL+'/rest/v1/machines',{method:'POST',headers:{...hdr(),'Content-Type':'application/json',Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({id:m.id,data:m,upd:m.upd})});if(!r.ok)throw 0}
+ catch(e){toast('Erro ao salvar. Verifique a conexão e o login.')}}
+function touch(){if(!ED())return;cur.upd=Date.now();clearTimeout(timer);const m=cur;timer=setTimeout(()=>{timer=null;save(m)},400)}
+async function flush(){if(timer&&cur){clearTimeout(timer);timer=null;await save(cur)}}
+async function load(){
+ try{await refresh();const r=await fetch(SB_URL+'/rest/v1/machines?select=data',{headers:hdr()});if(!r.ok)throw 0;const a=await r.json(),n={};a.forEach(x=>{n[x.data.id]=x.data});M=n}
+ catch(e){toast('Erro ao carregar os dados. Confira a configuração do Supabase.')}
+ loaded=true;render()}
+
+const CHECK=[
+['Mecânica','Ruídos / vibração anormais'],['Mecânica','Fixação de parafusos e base'],['Mecânica','Estado de correias / correntes / acoplamentos'],['Mecânica','Folgas e desgaste de rolamentos'],
+['Lubrificação','Nível e estado do óleo / graxa'],['Lubrificação','Vazamentos (óleo, ar, fluido)'],
+['Elétrica','Painel, cabos e conexões'],['Elétrica','Aterramento'],['Elétrica','Corrente do motor dentro do nominal'],['Elétrica','Aquecimento em contatores / terminais'],
+['Segurança','Proteções e guardas instaladas'],['Segurança','Botão de emergência / intertravamentos'],['Segurança','Sinalização e limpeza do entorno'],
+['Preditiva','Análise de vibração (mm/s)'],['Preditiva','Termografia (°C)'],['Preditiva','Ultrassom / análise de óleo']
+].map(([g,t])=>({g,t,s:'',o:''}));
+function novo(){const n=Object.keys(M).reduce((a,k)=>{const x=/^MAQ-(\d+)$/.exec(k);return x?Math.max(a,+x[1]):a},0)+1,id='MAQ-'+String(n).padStart(3,'0');
+ return {id,nome:'',tag:'',fab:'',modelo:'',serie:'',ano:'',setor:'',pot:'',crit:'B',per:'Mensal',resp:'',fotoMaq:'',fotoPlaca:'',check:JSON.parse(JSON.stringify(CHECK)),hist:[],upd:Date.now()}}
+
+/* ---------- Fotos ---------- */
+function shrink(f,max,q){return new Promise((res,rej)=>{const i=new Image(),u=URL.createObjectURL(f);i.onload=()=>{const s=Math.min(1,max/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=i.width*s;c.height=i.height*s;c.getContext('2d').drawImage(i,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(b=>b?res(b):rej(),'image/jpeg',q)};i.onerror=rej;i.src=u})}
+async function putPhoto(f){await refresh();const b=await shrink(f,1280,.75),p=cur.id+'/'+Date.now()+'.jpg';
+ const r=await fetch(SB_URL+'/storage/v1/object/fotos/'+p,{method:'POST',headers:{...hdr(),'Content-Type':'image/jpeg'},body:b});if(!r.ok)throw 0;return SB_URL+'/storage/v1/object/public/fotos/'+p}
+async function pick(inp,cb){const f=inp.files[0];if(!f||!ED())return;try{toast('Enviando foto...');cb(await putPhoto(f));touch();render()}catch(e){toast('Falha ao enviar a foto')}}
+
+/* ---------- Componentes ---------- */
+function F(k,l,t){return `<label>${l}<input type="${t||'text'}" value="${esc(cur[k])}"${dis()} onchange="cur.${k}=this.value;touch()"></label>`}
+function S(k,l,o){return `<label>${l}<select${dis()} onchange="cur.${k}=this.value;touch()">${o.map(([v,t])=>`<option value="${v}"${cur[k]==v?' selected':''}>${t||v}</option>`).join('')}</select></label>`}
+function photo(k,l){const u=cur[k];return `<div><label>${l}</label><div class="ph">${u?`<img src="${esc(u)}" alt="${l}">`:'<span>Sem foto</span>'}
+ <span class="noprint ed"><label class="btn s" style="margin:0;color:var(--ac)">${u?'Trocar foto':'Tirar / escolher foto'}<input type="file" accept="image/*" hidden onchange="pick(this,u=>cur.${k}=u)"></label></span></div></div>`}
+
+function listView(){
+ const a=Object.values(M).sort((x,y)=>x.id>y.id?1:-1);
+ return `<div class="top"><h1>Máquinas</h1><span class="sp"></span><span class="ed"><button class="s" onclick="location.hash='etiquetas'">Etiquetas QR</button> <button onclick="add()">+ Nova máquina</button></span></div>
+ <div class="card top noprint ed" style="gap:10px"><label style="margin:0">Criar fichas em lote<input id="qtd" type="number" min="1" max="100" value="30" style="width:90px"></label><button onclick="lote()">Criar fichas em branco</button><p>IDs em sequência, com link e QR Code automáticos.</p></div>
+ <input id="busca" placeholder="Buscar por nome, código ou setor..." oninput="busca(this.value)" style="margin-bottom:12px">
+ ${a.length?a.map(m=>`<a class="card mc" href="#${m.id}" data-q="${esc((m.id+' '+m.nome+' '+m.setor+' '+m.tag+' '+m.fab+' '+m.modelo).toLowerCase())}"><img src="${esc(m.fotoMaq)}" alt=""><div><b>${esc(m.nome||'Sem nome')}</b> <span class="tag" style="font-size:12px;padding:2px 6px">${esc(m.id)}</span><p>${esc(m.setor)} · ${esc(m.fab)} ${esc(m.modelo)} · Criticidade ${esc(m.crit)}</p></div></a>`).join(''):'<div class="card"><p>Nenhuma máquina cadastrada ainda.</p></div>'}
+ <p style="text-align:center;margin-top:20px" class="noprint">${ED()?'<a href="#" onclick="logout();return false" style="color:var(--ac)">Sair do modo edição</a>':'<a href="#entrar" style="color:var(--mu)">Acesso da manutenção</a>'}</p>`}
+function busca(v){v=v.toLowerCase();document.querySelectorAll('.mc').forEach(e=>{e.style.display=e.dataset.q.includes(v)?'':'none'})}
+async function add(){const m=novo();M[m.id]=m;await save(m);location.hash=m.id}
+async function lote(){if(busy)return;const n=Math.min(100,parseInt($('#qtd').value)||0);if(n<1)return;busy=true;toast('Criando '+n+' fichas...');
+ const ms=[];for(let i=0;i<n;i++){const m=novo();M[m.id]=m;ms.push(m)}
+ await Promise.all(ms.map(save));busy=false;render();toast(n+' fichas criadas')}
+function etqView(){const a=Object.values(M).sort((x,y)=>x.id>y.id?1:-1);
+ return `<div class="top noprint"><a class="btn s" href="#lista">← Máquinas</a><span class="sp"></span><button onclick="window.print()">Imprimir etiquetas</button></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px">${a.map(m=>`<div class="card" style="text-align:center;margin:0"><div class="eq" data-id="${esc(m.id)}" style="display:flex;justify-content:center;margin-bottom:6px"></div><b>${esc(m.id)}</b><p>${esc(m.nome)}</p></div>`).join('')}</div>`}
+function etqQr(){let b=BASE;try{b=localStorage.getItem(BK)||BASE}catch(e){}document.querySelectorAll('.eq').forEach(e=>{if(window.QRCode)new QRCode(e,{text:b.split('#')[0]+'#'+e.dataset.id,width:130,height:130,correctLevel:QRCode.CorrectLevel.M})})}
+function loginView(){return `<div class="top"><a class="btn s" href="#lista">← Voltar</a></div><div class="card" style="max-width:380px;margin:0 auto"><h2>Acesso da manutenção</h2>
+ <label>E-mail<input id="em" type="email" autocomplete="username"></label><br><label>Senha<input id="pw" type="password" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()"></label><br><button onclick="login()">Entrar</button></div>`}
+
+function fichaView(m){
+ let lastG='';
+ const rows=m.check.map((c,i)=>{const h=c.g!==lastG?`<tr class="gr"><td colspan="4">${esc(c.g)}</td></tr>`:'';lastG=c.g;
+  return h+`<tr><td><input value="${esc(c.t)}"${dis()} onchange="cur.check[${i}].t=this.value;touch()"></td>
+  <td style="width:90px"><select class="st-${c.s}"${dis()} onchange="cur.check[${i}].s=this.value;touch();render()"><option value="">—</option>${['OK','NC','NA'].map(v=>`<option${c.s==v?' selected':''}>${v}</option>`).join('')}</select></td>
+  <td><input value="${esc(c.o)}" placeholder="${ED()?'Observação / medição':''}"${dis()} onchange="cur.check[${i}].o=this.value;touch()"></td>
+  <td class="noprint ed" style="width:34px"><button class="d" style="padding:2px 8px" onclick="cur.check.splice(${i},1);touch();render()">×</button></td></tr>`}).join('');
+ const prox=m.hist.filter(h=>h.st!=='Realizada'&&h.d).sort((a,b)=>a.d>b.d?1:-1)[0];
+ const hist=m.hist.map((h,i)=>({h,i})).sort((a,b)=>(b.h.d||'9999')>(a.h.d||'9999')?1:-1).map(({h,i})=>`<div class="rec"><div class="g3">
+  <label>Data<input type="date" value="${esc(h.d)}"${dis()} onchange="cur.hist[${i}].d=this.value;touch();render()"></label>
+  <label>Tipo<select${dis()} onchange="cur.hist[${i}].tipo=this.value;touch()">${['Preventiva','Preditiva','Corretiva'].map(v=>`<option${h.tipo==v?' selected':''}>${v}</option>`).join('')}</select></label>
+  <label>Situação<select${dis()} onchange="cur.hist[${i}].st=this.value;touch();render()">${['Planejada','Realizada'].map(v=>`<option${h.st==v?' selected':''}>${v}</option>`).join('')}</select></label>
+  <label>Responsável<input value="${esc(h.resp)}"${dis()} onchange="cur.hist[${i}].resp=this.value;touch()"></label>
+  <label style="grid-column:span 2">Serviço / resultado<textarea${dis()} onchange="cur.hist[${i}].desc=this.value;touch()">${esc(h.desc)}</textarea></label></div>
+  <div class="th">${(h.fotos||[]).map((u,j)=>`<div><a href="${esc(u)}" target="_blank" rel="noopener"><img src="${esc(u)}" alt="Foto ${j+1}"></a><b class="noprint ed" onclick="cur.hist[${i}].fotos.splice(${j},1);touch();render()">×</b></div>`).join('')}</div>
+  <div class="top noprint ed" style="margin:8px 0 0"><label class="btn s" style="margin:0;color:var(--ac)">+ Foto<input type="file" accept="image/*" hidden onchange="pick(this,u=>cur.hist[${i}].fotos.push(u))"></label><span class="sp"></span><button class="d" onclick="cur.hist.splice(${i},1);touch();render()">Excluir registro</button></div></div>`).join('');
+ return `<div class="top noprint"><a class="btn s" href="#lista">← Máquinas</a><span class="sp"></span><button class="s" onclick="window.print()">Imprimir / PDF</button><button class="d ed" onclick="del()">${delArm?'Confirmar exclusão':'Excluir'}</button></div>
+ <header class="card hd"><div><h1>${esc(m.nome||'FICHA DE CONTROLE DE MANUTENÇÃO')}</h1><p>Indusparquet · Preventiva e Preditiva · FCM-01</p></div><div class="tag">${esc(m.id)}</div></header>
+ ${prox?`<div class="card" style="border-left:6px solid var(--ac)"><b style="color:var(--ac)">Próxima manutenção planejada: ${esc(prox.d.split('-').reverse().join('/'))} (${esc(prox.tipo)})</b></div>`:''}
+ <section class="card"><h2>Histórico de manutenções</h2>${hist||'<p>Nenhum registro.</p><br>'}
+ <div class="noprint ed"><button onclick="cur.hist.push({d:'',tipo:'Preventiva',st:'Planejada',resp:'',desc:'',fotos:[]});touch();render()">+ Registrar / agendar manutenção</button></div></section>
+ <section class="card"><h2>Fotos da máquina</h2><div class="g2">${photo('fotoMaq','Foto da máquina')}${photo('fotoPlaca','Foto da placa de identificação')}</div></section>
+ <section class="card"><h2>Identificação</h2><div class="g3">${F('nome','Equipamento')}${F('tag','TAG / Patrimônio')}${F('setor','Setor / Linha')}${F('fab','Fabricante')}${F('modelo','Modelo')}${F('serie','Nº de série')}${F('ano','Ano de fabricação')}${F('pot','Potência / Capacidade')}${F('resp','Responsável pela máquina')}
+ ${S('crit','Criticidade',[['A','A – Crítica'],['B','B – Importante'],['C','C – Baixa']])}${S('per','Periodicidade preventiva',['Semanal','Quinzenal','Mensal','Bimestral','Trimestral','Semestral','Anual'].map(v=>[v]))}</div></section>
+ <section class="card"><h2>Checklist de inspeção</h2><p>OK = conforme · NC = não conforme · NA = não se aplica</p><div class="sc"><table><thead><tr><th>Item</th><th>Status</th><th>Observação</th><th class="noprint ed"></th></tr></thead><tbody>${rows}</tbody></table></div>
+ <div class="top noprint ed" style="margin-top:10px"><button class="s" onclick="cur.check.push({g:'Personalizado',t:'',s:'',o:''});touch();render()">+ Item</button></div></section>
+ <section class="card ed"><h2>Link e QR Code da máquina</h2><div class="qr"><div id="qr"></div><div style="flex:1;min-width:220px">
+ <label class="noprint">Endereço base do site (já preenchido automaticamente)<input id="base" value="${esc(localStorage.getItem(BK)||BASE)}" onchange="try{localStorage.setItem(BK,this.value)}catch(e){};qr()"></label>
+ <label>Link desta máquina<input id="lnk" readonly onclick="this.select()"></label><div class="top noprint" style="margin-top:8px"><button onclick="cp()">Copiar link</button></div>
+ <p>Cole o QR Code impresso na máquina: ao escanear, abre esta ficha.</p></div></div></section>`}
+
+function qr(){if(!ED()||!$('#qr'))return;const b=($('#base')||{}).value||BASE,u=b.split('#')[0]+'#'+cur.id;$('#lnk').value=u;const q=$('#qr');q.innerHTML='';
+ if(window.QRCode)new QRCode(q,{text:u,width:150,height:150,correctLevel:QRCode.CorrectLevel.M});else q.textContent='QR indisponível'}
+function cp(){const l=$('#lnk');l.select();try{navigator.clipboard.writeText(l.value).then(()=>toast('Link copiado'),()=>document.execCommand('copy'))}catch(e){document.execCommand('copy');toast('Link copiado')}}
+async function del(){if(!delArm){delArm=true;render();setTimeout(()=>{delArm=false},4000);return}
+ const id=cur.id;delete M[id];await refresh();try{const r=await fetch(SB_URL+'/rest/v1/machines?id=eq.'+encodeURIComponent(id),{method:'DELETE',headers:hdr()});if(!r.ok)throw 0}catch(e){toast('Erro ao excluir')}delArm=false;location.hash='lista'}
+
+function render(){
+ document.body.classList.toggle('ro',!ED());
+ if(!loaded){$('#app').innerHTML='<p style="padding:20px">Carregando...</p>';return}
+ const h=decodeURIComponent(location.hash.slice(1));
+ if(h==='entrar'){cur=null;$('#app').innerHTML=loginView()}
+ else if(h&&h!=='lista'&&M[h]){cur=M[h];$('#app').innerHTML=fichaView(cur);qr()}
+ else if(h==='etiquetas'&&ED()){cur=null;$('#app').innerHTML=etqView();etqQr()}
+ else{cur=null;$('#app').innerHTML=listView()}}
+window.addEventListener('hashchange',async()=>{delArm=false;await flush();window.scrollTo(0,0);load()});
+render();load();
+</script></body></html>
